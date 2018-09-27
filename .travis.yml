@@ -1,0 +1,11 @@
+sudo: required
+
+service:
+  - docker
+
+before_install:
+  - docker build -t luttah/docker-react -f Dockerfile .
+
+  #we need the -- --coverage to tell travis the tests have finished running otherwise it will wait for input and just wait forever
+script:
+  - docker run luttah/docker-react npm run test -- --coverage
