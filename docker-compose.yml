@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: . #where to get the project files dot means current directory
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+    # this is a refence that was created in the container before being deleted 
+    # in our project and should not be overwritten hence that's why we dont say 
+    # .:/app/node_modules because node_modules is deleted locally
+     - /app/node_modules 
+     - .:/app # this sets a reference to our local machine which maps to /app
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+     - /app/node_modules
+     - .:/app
+    command: ["npm", "run", "test"] #this kicks off the tests
