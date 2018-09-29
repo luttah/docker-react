@@ -6,6 +6,20 @@ services:
 before_install:
   - docker build -t luttah/docker-react -f Dockerfile.dev .
 
-  #we need the -- --coverage to tell travis the tests have finished running otherwise it will wait for input and just wait forever
+# we need the -- --coverage to tell travis the tests have finished running otherwise it will wait for input and just wait forever
 script:
   - docker run luttah/docker-react npm run test -- --coverage
+
+# This section is repsonsible for deploying to app to AWS
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-west-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-eu-west-2-169680976876" # found in S3 services will contain more apps etc
+  bucket_path: "docker-react" # is the same as the app name this folder only gets created after a deploy so wont be there by default
+  on: # this tells it to only deploy when changes happen on master branch
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
